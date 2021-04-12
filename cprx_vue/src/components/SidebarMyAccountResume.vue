@@ -3,17 +3,17 @@
         <p class="menu-label is-hidden-touch">RESUME & CV</p>
             <ul class="menu-list mb-5">
             <li>
-                <a @click="toggle('education')" v-bind:class="sections.education">
+                <a @click="executeEducation()" v-bind:class="sections.education">
                 <span class="icon"><i class="fas fa-graduation-cap"></i></span> Education
                 </a>
             </li>
             <li>
-                <a @click="toggle('licenses')" v-bind:class="sections.licenses">
+                <a @click="executeLicenses()" v-bind:class="sections.licenses">
                 <span class="icon"><i class="fas fa-id-card"></i></span> Licenses
                 </a>
             </li>
             <li>
-                <a @click="toggle('certifications')" v-bind:class="sections.certifications">
+                <a @click="executeCertifications()" v-bind:class="sections.certifications">
                 <span class="icon"><i class="fas fa-certificate"></i></span> Certifications
                 </a>
             </li>
@@ -40,7 +40,22 @@ export default {
         ...mapGetters('vars', ['sections'])
     },
     methods: {
-        ...mapActions('vars', ['toggle'])
+        ...mapActions('vars', ['toggle']),
+        ...mapActions('education', ['getEducation']),
+        ...mapActions('licenses', ['getLicenses']),
+        ...mapActions('certifications', ['getCertifications']),
+        executeEducation() {
+            this.toggle('education')
+            this.getEducation()
+        },
+        executeLicenses() {
+            this.toggle('licenses')
+            this.getLicenses()
+        },
+        executeCertifications() {
+            this.toggle('certifications')
+            this.getCertifications()
+        }
     },
 }
 </script>

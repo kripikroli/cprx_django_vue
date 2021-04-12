@@ -58,7 +58,7 @@
     methods: {
       ...mapActions("auth", ["initialize", "removeToken"]),
       ...mapActions("login", ["logout"])
-    }
+    },
   };
 </script>
 

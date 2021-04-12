@@ -3,12 +3,12 @@
         <p class="menu-label is-hidden-touch">YOUR PROFILE</p>
         <ul class="menu-list mb-5">
             <li>
-                <a @click="toggle('security')" v-bind:class="sections.security">
+                <a @click="executeSecurity()" v-bind:class="sections.security">
                 <span class="icon"><i class="fas fa-fingerprint"></i></span> Login Security
                 </a>
             </li>
             <li>
-                <a @click="toggle('personal')" v-bind:class="sections.personal">
+                <a @click="executePersonal()" v-bind:class="sections.personal">
                 <span class="icon"><i class="fas fa-user-secret"></i></span> Personal Details
                 </a>
             </li>
@@ -26,6 +26,15 @@ export default {
     },
     methods: {
         ...mapActions('vars', ['toggle']),
+        ...mapActions('personal', ['getPersonal']),
+        executeSecurity() {
+            this.getSecurity()
+            this.toggle('security')
+        },
+        executePersonal() {
+            this.toggle('personal')
+            this.getPersonal()
+        }
     },
 }
 </script>
