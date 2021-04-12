@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 import auth from './modules/auth'
 import signup from './modules/signup'
 import login from './modules/login'
-import vars from './vars'
+import vars from './modules/vars'
 
 
 export default createStore({

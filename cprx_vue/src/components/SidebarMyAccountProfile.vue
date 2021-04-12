@@ -3,12 +3,12 @@
         <p class="menu-label is-hidden-touch">YOUR PROFILE</p>
         <ul class="menu-list mb-5">
             <li>
-                <a href="#" v-bind:class="is_active">
+                <a @click="toggle('security')" v-bind:class="sections.security">
                 <span class="icon"><i class="fas fa-fingerprint"></i></span> Login Security
                 </a>
             </li>
             <li>
-                <a href="#" class="">
+                <a @click="toggle('personal')" v-bind:class="sections.personal">
                 <span class="icon"><i class="fas fa-user-secret"></i></span> Personal Details
                 </a>
             </li>
@@ -17,12 +17,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
     name: "SidebarMyAccountProfile",
     computed: {
-        ...mapGetters('vars', ['is_active'])
-    }
+        ...mapGetters('vars', ['sections'])
+    },
+    methods: {
+        ...mapActions('vars', ['toggle']),
+    },
 }
 </script>
