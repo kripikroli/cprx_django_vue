@@ -77,6 +77,6 @@ export default {
   },
   computed: {
     ...mapGetters("signup", ["signupErrors"])
-  }
+  },
 };
 </script>

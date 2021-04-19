@@ -18,12 +18,12 @@
                 </a>
             </li>
             <li>
-                <a @click="toggle('skills')" v-bind:class="sections.skills">
+                <a @click="executeSkills()" v-bind:class="sections.skills">
                 <span class="icon"><i class="fas fa-bolt"></i></span> Skills
                 </a>
             </li>
             <li>
-                <a @click="toggle('references')" v-bind:class="sections.references">
+                <a @click="executeReferences()" v-bind:class="sections.references">
                 <span class="icon"><i class="fas fa-people-arrows"></i></span> References
                 </a>
             </li>
@@ -44,6 +44,8 @@ export default {
         ...mapActions('education', ['getEducation']),
         ...mapActions('licenses', ['getLicenses']),
         ...mapActions('certifications', ['getCertifications']),
+        ...mapActions('skills', ['getSkills']),
+        ...mapActions('references', ['getReferences']),
         executeEducation() {
             this.toggle('education')
             this.getEducation()
@@ -55,6 +57,14 @@ export default {
         executeCertifications() {
             this.toggle('certifications')
             this.getCertifications()
+        },
+        executeSkills() {
+            this.toggle('skills')
+            this.getSkills()
+        },
+        executeReferences() {
+            this.toggle('references')
+            this.getReferences()
         }
     },
 }

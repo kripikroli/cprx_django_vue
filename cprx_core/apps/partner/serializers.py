@@ -6,6 +6,8 @@ from .models import Licenses
 from .models import Certifications
 from .models import Skills
 from .models import SkillsList
+from .models import References
+from .models import LoginSecurity
 
 
 class PartnerSerializer(serializers.ModelSerializer):
@@ -42,7 +44,8 @@ class EducationSerializer(serializers.ModelSerializer):
             "field_name",
             "year_graduated",
             "region",
-            "country"
+            "country",
+            "degree_type"
         )
 
 
@@ -72,4 +75,53 @@ class CertificationsSerializer(serializers.ModelSerializer):
             "region",
             "country",
             "is_active"
+        )
+
+
+class SkillsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skills
+        fields = (
+            "id",
+            "skill_name"
+        )
+
+
+class SkillsListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SkillsList
+        fields = (
+            "id",
+            "skill_name"
+        )
+
+
+class ReferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = References
+        fields = (
+            "id",
+            "name",
+            "phone_number",
+            "email",
+            "facility_name",
+            "start_date",
+            "end_date"
+        )
+
+
+class LSSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoginSecurity
+        fields = (
+            "id",
+            "email",
+            "alt_email",
+            "phone_number",
+            "is_email_verified",
+            "is_phone_verified",
+            "secret_question_1",
+            "secret_question_2",
+            "secret_answer_1",
+            "secret_answer_2"
         )

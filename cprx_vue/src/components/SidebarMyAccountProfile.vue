@@ -27,9 +27,10 @@ export default {
     methods: {
         ...mapActions('vars', ['toggle']),
         ...mapActions('personal', ['getPersonal']),
+        ...mapActions('login_security', ['getLSA']),
         executeSecurity() {
-            this.getSecurity()
             this.toggle('security')
+            this.getLSA()
         },
         executePersonal() {
             this.toggle('personal')

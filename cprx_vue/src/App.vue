@@ -36,7 +36,7 @@
       </div>
     </nav>
 
-    <section class="section">
+    <section class="section container">
       <router-view></router-view>
     </section>
 
@@ -66,4 +66,11 @@
 <style lang="scss">
 @import "../node_modules/bulma";
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css");
+
+body {
+  background-color: #fafafa;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 </style>

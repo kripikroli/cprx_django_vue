@@ -21,19 +21,21 @@ class Partner(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_full_name(self):
-        return (f"{ self.first_name } { self.middle_initial } { self.last_name }")
+        return (f"{ self.first_name } { self.middle_initial }. { self.last_name }")
 
     def __str__(self):
         return (f"{ self.first_name } { self.last_name }")
 
 
 class Education(models.Model):
+    HIGHSCHOOL = 'highschool'
     ASSOCIATE = 'associate'
     BACHELOR = 'bachelor'
     MASTER = 'master'
     DOCTORATE = 'doctorate'
 
     DEGREE_TYPES = (
+        (HIGHSCHOOL, 'Highschool'),
         (ASSOCIATE, 'Associate'),
         (BACHELOR, 'Bachelor'),
         (MASTER, 'Master'),
@@ -107,3 +109,35 @@ class SkillsList(models.Model):
 
     def __str__(self):
         return self.skill_name
+
+
+class References(models.Model):
+    name = models.CharField(max_length=255, blank=True, null=True)
+    position = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=255, blank=True, null=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
+    facility_name = models.CharField(max_length=255, blank=True, null=True)
+    start_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(blank=True, null=True)
+    user = models.ForeignKey(
+        User, related_name='references', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class LoginSecurity(models.Model):
+    email = models.CharField(max_length=255, blank=True, null=True)
+    alt_email = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=255, blank=True, null=True)
+    secret_question_1 = models.CharField(max_length=255, blank=True, null=True)
+    secret_question_2 = models.CharField(max_length=255, blank=True, null=True)
+    secret_answer_1 = models.CharField(max_length=255, blank=True, null=True)
+    secret_answer_2 = models.CharField(max_length=255, blank=True, null=True)
+    is_email_verified = models.BooleanField(default=False)
+    is_phone_verified = models.BooleanField(default=False)
+    user = models.ForeignKey(
+        User, related_name='login_security', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.phone_number
