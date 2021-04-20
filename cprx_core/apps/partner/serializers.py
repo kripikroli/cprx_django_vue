@@ -5,7 +5,6 @@ from .models import Education
 from .models import Licenses
 from .models import Certifications
 from .models import Skills
-from .models import SkillsList
 from .models import References
 from .models import LoginSecurity
 
@@ -83,16 +82,8 @@ class SkillsSerializer(serializers.ModelSerializer):
         model = Skills
         fields = (
             "id",
-            "skill_name"
-        )
-
-
-class SkillsListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SkillsList
-        fields = (
-            "id",
-            "skill_name"
+            "skill_name",
+            "skill_details"
         )
 
 
@@ -102,6 +93,7 @@ class ReferencesSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "position",
             "phone_number",
             "email",
             "facility_name",

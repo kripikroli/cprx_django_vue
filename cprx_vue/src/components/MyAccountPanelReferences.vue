@@ -1,7 +1,5 @@
 <template>
     <div class="components">
-        <h1 class="subtitle">References</h1>
-
         <div class="section">
             <div class="card">
                 <div class="card-header">
@@ -9,24 +7,130 @@
                 </div>
                 <div class="card-content">
                     <div class="content">
-                        <div v-for="reference in references" v-bind:key="reference.id" class="mb-5">
-                            <p class="mb-0" v-if="reference.start_date || reference.end_date"><strong class="mr-5"></strong>{{ formatDate(reference.start_date) }} to {{ formatDate(reference.end_date) }}</p>
-                            <p class="mb-0" v-if="reference.name"><strong class="mr-5">Name:</strong> {{ reference.name }}</p>
-                            <p class="mb-0" v-if="reference.email"><strong class="mr-5">Email:</strong> {{ reference.email }}</p>
-                            <p class="mb-0" v-if="reference.phone_number"><strong class="mr-5">Phone:</strong> {{ formatPhoneNumber(reference.phone_number) }}</p>
-                            <p class="mb-0" v-if="reference.facility_name"><strong class="mr-5">Facility:</strong> {{ reference.facility_name }}</p>
+
+                        <div v-for="ref in references" v-bind:key="ref.id" class="mb-3">
+                            
+                            <article class="message is-success">
+                                <div class="message-body">
+                                    <div class="columns is-multiline">
+                                        <div class="column is-8">
+                                            <p>
+                                            <strong>{{ ref.name }} | {{ ref.position }}</strong>
+                                            <br>{{ ref.email }}
+                                            <br>{{ formatPhoneNumber(ref.phone_number) }}
+                                            <br>{{ formatDate(ref.start_date) }} - {{ formatDate(ref.end_date) }}
+                                            <br>{{ ref.facility_name }}
+                                            </p>
+                                        </div>
+
+                                        <div class="column is-4">
+                                            <p class="is-pulled-right">
+                                                <button @click="deleteReferences(ref.id)" class="button is-danger is-outlined mr-3"><span class="icon is-small"><i class="far fa-trash-alt"></i></span></button>
+
+                                                <button @click="showUpdateModal(ref)" class="button is-success is-outlined"><span class="icon is-small"><i class="far fa-edit"></i></span></button>
+                                            
+                                            </p>
+                                        </div>
+                                        <div class="is-clearfix"></div>
+                                    </div>
+                                </div>
+                            </article>
                         </div>
+                        
+                        <div>
+
+                            <button @click="showAddModal" class="button is-success is-outlined is-pulled-right"><span class="icon is-small"><i class="fas fa-plus"></i></span></button>
+                        </div>
+                        <div class="is-clearfix"></div>
                     </div>
                 </div>
             </div>
             <br />
         </div>
+
+        <!-- start modal -->
+        <div :class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <div class="content">
+
+
+                        <div class="field">
+                            <label class="label">Start date</label>
+                            <div class="control">
+                                <Datepicker v-model="_references.start_date" class="input"></Datepicker>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">End date</label>
+                            <div class="control">
+                                <Datepicker v-model="_references.end_date" class="input"></Datepicker>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <legend class="label">Name</legend>
+                            <div class="control">
+                                <input v-model="_references.name" class="input" type="text" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <legend class="label">Position</legend>
+                            <div class="control">
+                                <input v-model="_references.position" class="input" type="text" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <legend class="label">Email</legend>
+                            <div class="control">
+                                <input v-model="_references.email" class="input" type="email" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <legend class="label">Phone number</legend>
+                            <div class="control">
+                                <input v-model="_references.phone_number" class="input" type="tel" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <legend class="label">Facility name</legend>
+                            <div class="control">
+                                <input v-model="_references.facility_name" class="input" type="text" placeholder="">
+                            </div>
+                        </div>
+
+                        
+
+
+                        <div class="buttons is-pulled-right mt-5">
+                            <div class="button is-danger" @click="close()">Cancel</div>
+                            <div class="button is-success" @click="submit()">Yes, continue!</div>
+                        </div>
+
+                        <div class="is-clearfix"></div>
+
+
+                    </div>
+                </div>
+            </div>
+            <button @click="close" class="modal-close is-large" aria-label="close"></button>
+        </div>
+        <!-- end modal -->
+
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
+import Datepicker from 'vue3-datepicker'
+import parseISO from 'date-fns/parseISO'
 
 export default {
     name: "MyAccountPanelReferences",
@@ -34,6 +138,7 @@ export default {
         ...mapGetters('references', ['references'])
     },
     methods: {
+        ...mapActions('references', ['addReferences', 'updateReferences', 'deleteReferences']),
         formatPhoneNumber(str) {
             let cleaned = ("" + str).replace(/\D/g, "");
             let match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
@@ -48,6 +153,41 @@ export default {
         formatDate(str) {
             return moment(new Date(str)).format("LL");
         },
+        showAddModal() {
+            this._references.start_date = new Date()
+            this._references.end_date = new Date()
+            this.modal = 'modal is-active'
+        },
+        showUpdateModal(ref) {
+            this._references = {...ref}
+            this._references.start_date = parseISO(ref.start_date)
+            this._references.end_date = parseISO(ref.end_date)
+            this.modal = 'modal is-active'
+            this.update = true
+        },
+        close() {
+            this.modal = 'modal'
+        },
+        submit() {
+            if (this.update) {
+                this.updateReferences(this._references)
+            }
+            else {
+                this.addReferences(this._references)
+            }
+            this.modal = 'modal'
+            this.update = false
+        }
+    }, 
+    data() {
+        return {
+            _references: {},
+            modal: 'modal',
+            update: false
+        }
     },
+    components: {
+        Datepicker
+    }
 }
 </script>

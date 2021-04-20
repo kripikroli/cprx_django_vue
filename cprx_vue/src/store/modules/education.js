@@ -71,7 +71,7 @@ const actions = {
                 dispatch('getEducation')
 
                 toast({
-                    message: 'Deleted successfully!',
+                    message: 'Education removed!',
                     type: 'is-danger',
                     dismissible: true,
                     pauseOnHover: true,

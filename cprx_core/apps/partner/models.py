@@ -1,3 +1,5 @@
+import base64
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
@@ -95,22 +97,6 @@ class Certifications(models.Model):
         return self.cert_name
 
 
-class Skills(models.Model):
-    skill_name = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey(
-        User, related_name='skills', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.skill_name
-
-
-class SkillsList(models.Model):
-    skill_name = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return self.skill_name
-
-
 class References(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     position = models.CharField(max_length=255, blank=True, null=True)
@@ -141,3 +127,18 @@ class LoginSecurity(models.Model):
 
     def __str__(self):
         return self.phone_number
+
+
+class Skills(models.Model):
+    skill_name = models.CharField(max_length=255, null=True, blank=True)
+    skill_details = models.TextField(db_column='data', blank=True)
+    user = models.ForeignKey(
+        User, related_name='skills', on_delete=models.CASCADE)
+
+    def set_data(self, data):
+        self._data = base64.encodestring(data)
+
+    def get_data(self):
+        return base64.decodestring(self._data)
+
+    data = property(get_data, set_data)

@@ -3,28 +3,28 @@
     <h1 class="title">My Account</h1>
     <div class="main-content columns is-fullheight">
         <aside
-            class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile"
+            class="column is-3 is-narrow-mobile is-fullheight section is-hidden-mobile"
         >
         <SidebarMyAccount />
         </aside>
 
-        <div class="container column is-10" v-show="panels.security">
+        <div class="container column is-9" v-show="panels.security">
                 <MyAccountPanelSecurity />
         </div>
 
-        <div class="container column is-10" v-show="panels.personal">
+        <div class="container column is-9" v-show="panels.personal">
                 <MyAccountPanelPersonal />
         </div>
 
-        <div class="container column is-10" v-show="panels.education">
+        <div class="container column is-9" v-show="panels.education">
                 <MyAccountPanelEducation />
         </div>
 
-        <div class="container column is-10" v-show="panels.licenses">
+        <div class="container column is-9" v-show="panels.licenses">
                 <MyAccountPanelLicenses />
         </div>
 
-        <div class="container column is-10" v-show="panels.certifications">
+        <div class="container column is-9" v-show="panels.certifications">
                 <MyAccountPanelCertifications />
         </div>
 
@@ -32,15 +32,15 @@
                 <MyAccountPanelSkills />
         </div>
 
-        <div class="container column is-10" v-show="panels.references">
+        <div class="container column is-9" v-show="panels.references">
                 <MyAccountPanelReferences />
         </div>
 
-        <div class="container column is-10" v-show="panels.notifications">
+        <div class="container column is-9" v-show="panels.notifications">
                 <MyAccountPanelNotifications />
         </div>
 
-        <div class="container column is-10" v-show="panels.messages">
+        <div class="container column is-9" v-show="panels.messages">
                 <MyAccountPanelMessages />
         </div>
 

@@ -6,19 +6,17 @@ from .serializers import PartnerSerializer
 from .serializers import EducationSerializer
 from .serializers import LicensesSerializer
 from .serializers import CertificationsSerializer
-from .serializers import SkillsSerializer
-from .serializers import SkillsListSerializer
 from .serializers import ReferencesSerializer
 from .serializers import LSSerializer
+from .serializers import SkillsSerializer
 
 from .models import Partner
 from .models import Education
 from .models import Licenses
 from .models import Certifications
-from .models import Skills
-from .models import SkillsList
 from .models import References
 from .models import LoginSecurity
+from .models import Skills
 
 
 class PartnerViewset(viewsets.ModelViewSet):
@@ -100,25 +98,6 @@ class CertificationsViewset(viewsets.ModelViewSet):
 class SkillsViewset(viewsets.ModelViewSet):
     serializer_class = SkillsSerializer
     queryset = Skills.objects.all()
-
-    def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-    def perform_update(self, serializer):
-        obj = self.get_object()
-
-        if self.request.user != obj.user:
-            raise PermissionDenied('Wrong object owner')
-
-        serializer.save()
-
-
-class SkillsListViewset(viewsets.ModelViewSet):
-    serializer_class = SkillsListSerializer
-    queryset = SkillsList.objects.all()
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
