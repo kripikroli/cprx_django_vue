@@ -60,6 +60,7 @@
                                     <div class="control">
                                         <input v-model="_education.school_name" class="input" type="text" placeholder="i.e. Caldwell University">
                                     </div>
+                                    <p v-if="nvschool" class="help is-danger">Invalid field.</p>
                                 </div>
 
                                 <div class="field">
@@ -67,6 +68,7 @@
                                     <div class="control">
                                         <input v-model="_education.field_name" class="input" type="text" placeholder="i.e. Nursing">
                                     </div>
+                                    <p v-if="nvfield" class="help is-danger">Invalid field.</p>
                                 </div>
 
                                 <div class="field">
@@ -79,6 +81,7 @@
                                             <option value="doctorate">Doctorate</option>
                                         </select>
                                     </div>
+                                    <p v-if="nvdegree" class="help is-danger">Invalid field.</p>
                                 </div>
 
                                 <div class="field">
@@ -86,6 +89,7 @@
                                     <div class="control">
                                         <input v-model="_education.region" class="input" type="text" placeholder="i.e. New Jersey">
                                     </div>
+                                    <p v-if="nvregion" class="help is-danger">Invalid field.</p>
                                 </div>
 
                                 <div class="field">
@@ -93,6 +97,7 @@
                                     <div class="control">
                                         <input v-model="_education.country" class="input" type="text" placeholder="i.e. United States">
                                     </div>
+                                    <p v-if="nvcountry" class="help is-danger">Invalid field.</p>
                                 </div>
 
                                 <div class="field">
@@ -100,6 +105,7 @@
                                     <div class="control">
                                         <input v-model="_education.year_graduated" class="input" type="text" placeholder="i.e. 1999">
                                     </div>
+                                    <p v-if="nvyear" class="help is-danger">Invalid field.</p>
                                 </div>
 
 
@@ -134,12 +140,22 @@ export default {
         return {
             isUpdate: false,
             modal: 'modal',
-            _education: {}
+            _education: {},
+
+            // validations
+
+            nvdegree: false,
+            nvfield: false,
+            nvschool: false,
+            nvregion: false,
+            nvcountry: false,
+            nvyear: false,
         }
     },
     methods: {
         ...mapActions('education', ['addEducation', 'updateEducation', 'deleteEducation']),
         showAddModal() {
+            this.turnOff()
             this._education = {}
             this._education.degree_type = 'bachelor'
             this.modal = 'modal is-active'
@@ -148,16 +164,21 @@ export default {
             this.modal = 'modal'
         },
         submit() {
-            if (this.isUpdate) {
-                this.updateEducation(this._education)
+            console.log('submit')
+            if (this.validateForm()) {
+                this.turnOff()
+                if (this.isUpdate) {
+                    this.updateEducation(this._education)
+                }
+                else {
+                    this.addEducation(this._education)
+                }
+                this.modal = 'modal'
+                this.isUpdate = false
             }
-            else {
-                this.addEducation(this._education)
-            }
-            this.modal = 'modal'
-            this.isUpdate = false
         },
         showUpdateModal(item) {
+            this.turnOff()
             this.isUpdate = true
             this._education.id = item.id
             this._education.field_name = item.field_name
@@ -167,6 +188,35 @@ export default {
             this._education.country = item.country
             this._education.year_graduated = item.year_graduated
             this.modal = 'modal is-active'
+        },
+        validateForm() {
+            if (
+                this._education.field_name &&
+                this._education.degree_type &&
+                this._education.school_name &&
+                this._education.region &&
+                this._education.country &&
+                this._education.year_graduated
+            ) {
+                return true
+            } else {
+                this.turnOff()
+                if (!this._education.field_name){this.nvfield=true}
+                if (!this._education.degree_type){this.nvdegree=true}
+                if (!this._education.school_name){this.nvschool=true}
+                if (!this._education.region){this.nvregion=true}
+                if (!this._education.country){this.nvcountry=true}
+                if (!this._education.year_graduated){this.nvyear=true}
+                return false
+            }
+        },
+        turnOff() {
+            this.nvdegree = false
+            this.nvfield = false
+            this.nvschool = false
+            this.nvregion = false
+            this.nvcountry = false
+            this.nvyear = false
         }
 
     },

@@ -55,9 +55,11 @@
                             <div class="control">
                                 <input v-model="_skills.skill_name" type="text" class="input" placeholder="e.g. Work Ethic">
                             </div>
+                            <p v-if="nvname" class="help is-danger">Invalid field.</p>
                             <div class="control">
                                 <textarea v-model="_skills.skill_details" class="textarea mt-3" placeholder="Describe your skill here..." rows="10"></textarea>
                             </div>
+                            <p v-if="nvdetails" class="help is-danger">Invalid field.</p>
                         </div>
 
                         
@@ -91,16 +93,23 @@ export default {
         return {
             _skills: {},
             modal: 'modal',
-            update: false
+            update: false,
+
+            // validations
+
+            nvname: false,
+            nvdetails: false
         }
     },
     methods: {
         ...mapActions('skills', ['addSkills', 'updateSkills', 'deleteSkills']),
         showAddModal() {
+            this.turnOff()
             this._skills = {}
             this.modal = 'modal is-active'
         },
         showUpdateModal(skill) {
+            this.turnOff()
             this._skills = {...skill}
             this.modal = 'modal is-active'
             this.update = true
@@ -109,14 +118,33 @@ export default {
             this.modal = 'modal'
         },
         submit() {
-            if (this.update) {
-                this.updateSkills(this._skills)
+            this.turnOff()
+            if (this.validateForm()) {
+                if (this.update) {
+                    this.updateSkills(this._skills)
+                }
+                else {
+                    this.addSkills(this._skills)
+                }
+                this.update = false
+                this.modal = 'modal'
             }
-            else {
-                this.addSkills(this._skills)
+        },
+        validateForm() {
+            if (this._skills.skill_name && this._skills.skill_details) {
+                return true
+            } else {
+                this.turnOff()
+                if (!this._skills.skill_name) {this.nvname=true}
+                if (!this._skills.skill_details) {this.nvdetails=true}
+                return false
             }
-            this.modal = 'modal'
+        },
+        turnOff() {
+            this.nvname = false
+            this.nvdetails = false
         }
+
     },
 }
 </script>

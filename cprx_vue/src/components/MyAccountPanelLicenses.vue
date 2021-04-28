@@ -69,6 +69,7 @@
                             <div class="control">
                                 <Datepicker v-model="_licenses.expiration_date" class="input"></Datepicker>
                             </div>
+                            <p v-if="nvexpire" class="help is-danger">Invalid field.</p>
                         </div>
 
                         
@@ -77,6 +78,7 @@
                             <div class="control">
                                 <input v-model="_licenses.license_name" class="input" type="text" placeholder="i.e. NCLEX">
                             </div>
+                            <p v-if="nvname" class="help is-danger">Invalid field.</p>
                         </div>
                 
 
@@ -86,6 +88,7 @@
                             <div class="control">
                                 <input v-model="_licenses.license_code" class="input" type="text" placeholder="i.e. NJ11090222345">
                             </div>
+                            <p v-if="nvcode" class="help is-danger">Invalid field.</p>
                         </div>
                     
                         <div class="field">
@@ -100,6 +103,7 @@
                             <div class="control">
                                 <input v-model="_licenses.region" class="input" type="text" placeholder="i.e. New Jersey">
                             </div>
+                            <p v-if="nvregion" class="help is-danger">Invalid field.</p>
                         </div>
                     
 
@@ -109,6 +113,7 @@
                             <div class="control">
                                 <input v-model="_licenses.country" class="input" type="text" placeholder="i.e. United States">
                             </div>
+                            <p v-if="nvcountry" class="help is-danger">Invalid field.</p>
                         </div>
                     
 
@@ -147,10 +152,12 @@ export default {
             return moment(new Date(str)).format("LL");
         },
         showAddModal() {
+            this.turnOff()
             this._licenses = {}
             this.modal = 'modal is-active'
         },
         showUpdateModal(item) {
+            this.turnOff()
             this._licenses = {}
             this._licenses = {...item}
             this._licenses.expiration_date = parseISO(item.expiration_date)
@@ -161,13 +168,42 @@ export default {
             this.modal = 'modal'
         },
         submit() {
-            if (this.update) {
-                this.updateLicenses(this._licenses)
+            this.turnOff()
+            if (this.validateForm()) {
+                if (this.update) {
+                    this.updateLicenses(this._licenses)
+                }
+                else {
+                    this.addLicenses(this._licenses)
+                }
+                this.update = false
+                this.modal = 'modal'
             }
-            else {
-                this.addLicenses(this._licenses)
+        },
+        validateForm() {
+            if (
+                this._licenses.expiration_date &&
+                this._licenses.license_name &&
+                this._licenses.license_code &&
+                this._licenses.region &&
+                this._licenses.country
+            ) {
+                return true
+            } else {
+                if (!this._licenses.expiration_date){this.nvexpire=true}
+                if (!this._licenses.license_name){this.nvname=true}
+                if (!this._licenses.license_code){this.nvcode=true}
+                if (!this._licenses.region){this.nvregion=true}
+                if (!this._licenses.country){this.nvcountry=true}
+                return false
             }
-            this.modal = 'modal'
+        },
+        turnOff() {
+            this.nvexpire = false
+            this.nvname = false
+            this.nvcode = false
+            this.nvregion = false
+            this.nvcountry = false
         }
     },
     data() {
@@ -176,8 +212,15 @@ export default {
             update: false,
             _licenses: {
                 expiration_date: new Date()
-            }
+            },
 
+            // validations
+
+            nvexpire: false,
+            nvname: false,
+            nvcode: false,
+            nvregion: false,
+            nvcountry: false,
         }
     },
     components: {

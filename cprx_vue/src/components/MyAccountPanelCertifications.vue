@@ -56,6 +56,7 @@
                             <div class="control">
                                 <Datepicker v-model="_certification.expiration_date" class="input"></Datepicker>
                             </div>
+                            <p v-if="nvexpire" class="help is-danger">Invalid field.</p>
                         </div>
 
                         
@@ -64,6 +65,7 @@
                             <div class="control">
                                 <input v-model="_certification.cert_name" class="input" type="text" placeholder="i.e. NCLEX">
                             </div>
+                            <p v-if="nvname" class="help is-danger">Invalid field.</p>
                         </div>
                 
 
@@ -73,6 +75,7 @@
                             <div class="control">
                                 <input v-model="_certification.cert_code" class="input" type="text" placeholder="i.e. NJ11090222345">
                             </div>
+                            <p v-if="nvcode" class="help is-danger">Invalid field.</p>
                         </div>
                     
                         <div class="field">
@@ -80,6 +83,7 @@
                             <div class="control">
                                 <input v-model="_certification.region" class="input" type="text" placeholder="i.e. New Jersey">
                             </div>
+                            <p v-if="nvregion" class="help is-danger">Invalid field.</p>
                         </div>
                 
                         <div class="field">
@@ -87,6 +91,7 @@
                             <div class="control">
                                 <input v-model="_certification.country" class="input" type="text" placeholder="i.e. United States">
                             </div>
+                            <p v-if="nvcountry" class="help is-danger">Invalid field.</p>
                         </div>
                     
 
@@ -125,10 +130,12 @@ export default {
             return moment(new Date(str)).format("LL");
         },
         showAddModal() {
+            this.turnOff()
             this._certification = {}
             this.modal = 'modal is-active'
         },
         showUpdateModal(item) {
+            this.turnOff()
             this._certification = {}
             this._certification = {...item}
             this._certification.expiration_date = parseISO(item.expiration_date)
@@ -139,21 +146,58 @@ export default {
             this.modal = 'modal'
         },
         submit() {
-            if (this.update) {
-                this.updateCertifications(this._certification)
+            this.turnOff()
+            if (this.validateForm()) {
+                if (this.update) {
+                    this.updateCertifications(this._certification)
+                }
+                else {
+                    this.addCertifications(this._certification)
+                }
+                this.update = false
+                this.modal = 'modal'
             }
-            else {
-                this.addCertifications(this._certification)
+        },
+        validateForm() {
+            if (
+                this._certification.expiration_date &&
+                this._certification.cert_name &&
+                this._certification.cert_code &&
+                this._certification.region &&
+                this._certification.country
+            ) {
+                return true
+            } else {
+                this.turnOff()
+                if(!this._certification.expiration_date){this.nvexpire=true}
+                if(!this._certification.cert_name){this.nvname=true}
+                if(!this._certification.cert_code){this.nvcode=true}
+                if(!this._certification.region){this.nvregion=true}
+                if(!this._certification.country){this.nvcountry=true}
+                return false
             }
-            this.modal = 'modal'
-            this.update = false
+        },
+        turnOff() {
+            this.nvexpire = false
+            this.nvname = false
+            this.nvcode = false
+            this.nvregion = false
+            this.nvcountry = false
         }
     },
     data() {
         return {
             modal: 'modal',
             _certification: {},
-            update: false
+            update: false,
+
+            // validations
+
+            nvexpire: false,
+            nvname: false,
+            nvcode: false,
+            nvregion: false,
+            nvcountry: false
         }
     },
     components: {

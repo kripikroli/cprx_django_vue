@@ -12,17 +12,11 @@
                             <div class="columns is-multiline">
                                 <div class="column is-fullwidth">
                                     <div class="field">
-                                        <label class="label">Primary email</label>
+                                        <label class="label">Email</label>
                                         <div class="control">
                                             <input v-model="_loginSecurityAttrs.email" class="input" type="email" placeholder="Email">
                                         </div>
-                                    </div>
-
-                                    <div class="field">
-                                        <label class="label">Alternative email</label>
-                                        <div class="control">
-                                            <input v-model="_loginSecurityAttrs.alt_email" class="input" type="email" placeholder="Alternative email(optional)">
-                                        </div>
+                                        <p v-if="nvemail" class="help is-danger">This email is invalid.</p>
                                     </div>
 
                                     <div class="field">
@@ -30,6 +24,7 @@
                                         <div class="control">
                                             <input v-model="_loginSecurityAttrs.phone_number" class="input" type="tel" placeholder="Phone number">
                                         </div>
+                                        <p v-if="nvphone" class="help is-danger">This phone number is invalid.</p>
                                     </div>
 
                                     <div class="field">
@@ -47,12 +42,13 @@
                                 <div class="column is-fullwidth">
                                     <div class="field">
                                         <div class="control">
-                                            <input v-model="_loginSecurityAttrs.secret_question_1" class="input" type="tel" placeholder="Secret Question One">
+                                            <input v-model="_loginSecurityAttrs.secret_question_1" class="input" type="text" placeholder="Secret Question One">
                                         </div>
                                         <div class="control has-icons-left has-icons-right mt-1">
-                                            <input v-model="_loginSecurityAttrs.secret_answer_1" autocomplete="" class="input" type="password" placeholder="Answer">
-                                            <span class="icon is-small is-left"><i class="fas fa-eye-slash"></i></span>
+                                            <input v-model="_loginSecurityAttrs.secret_answer_1" autocomplete="" class="input" :type="sa1Type" placeholder="Answer">
+                                            <span @click="showAnswer(1)" class="icon is-small is-left"><i :class="sa1Eye"></i></span>
                                         </div>
+                                        <p v-if="nvsq1" class="help is-danger">Please supply these fields.</p>
                                     </div>
                                 </div>
                             </div>
@@ -61,12 +57,13 @@
                                 <div class="column is-fullwidth">
                                     <div class="field">
                                         <div class="control">
-                                            <input v-model="_loginSecurityAttrs.secret_question_2" class="input" type="tel" placeholder="Secret Question Two">
+                                            <input v-model="_loginSecurityAttrs.secret_question_2" class="input" type="text" placeholder="Secret Question Two">
                                         </div>
                                         <div class="control has-icons-left has-icons-right mt-1">
-                                            <input v-model="_loginSecurityAttrs.secret_answer_2" autocomplete="" class="input" type="password" placeholder="Answer">
-                                            <span class="icon is-small is-left"><i class="fas fa-eye-slash"></i></span>
+                                            <input v-model="_loginSecurityAttrs.secret_answer_2" autocomplete="" class="input" :type="sa2Type" placeholder="Answer">
+                                            <span @click="showAnswer(2)" class="icon is-small is-left"><i :class="sa2Eye"></i></span>
                                         </div>
+                                        <p v-if="nvsq2" class="help is-danger">Please supply these fields.</p>
                                     </div>
                                 </div>
                             </div>
@@ -89,16 +86,9 @@
                         <div class="columns is-multiline">
                             <div class="column is-fullwidth">
                                 <div class="field">
-                                    <label class="label">Primary email</label>
+                                    <label class="label">Email</label>
                                     <div class="control">
                                         <input v-model="loginSecurityAttrs.email" class="input has-text-grey" type="email" placeholder="Email" readonly>
-                                    </div>
-                                </div>
-
-                                <div class="field">
-                                    <label class="label">Alternative email</label>
-                                    <div class="control">
-                                        <input v-model="loginSecurityAttrs.alt_email" class="input has-text-grey" type="email" placeholder="Alternative email(optional)" readonly>
                                     </div>
                                 </div>
 
@@ -199,18 +189,13 @@ export default {
     methods: {
         ...mapActions('login_security',['getLSA', 'addLSA', 'updateLSA']),
         save() {
-            this.modal = 'modal is-active'
+            if (this.validateForm()) {
+                this.turnOff()
+                this.modal = 'modal is-active'
+            }
         },
         makeChanges() {
-            this._loginSecurityAttrs.id = this.loginSecurityAttrs.id
-            this._loginSecurityAttrs.email = this.loginSecurityAttrs.email
-            this._loginSecurityAttrs.alt_email = this.loginSecurityAttrs.alt_email
-            this._loginSecurityAttrs.phone_number = this.loginSecurityAttrs.phone_number
-            this._loginSecurityAttrs.is_email_verified = this.loginSecurityAttrs.is_email_verified
-            this._loginSecurityAttrs.secret_question_1 = this.loginSecurityAttrs.secret_question_1
-            this._loginSecurityAttrs.secret_answer_1 = this.loginSecurityAttrs.secret_answer_1
-            this._loginSecurityAttrs.secret_question_2 = this.loginSecurityAttrs.secret_question_2
-            this._loginSecurityAttrs.secret_answer_2 = this.loginSecurityAttrs.secret_answer_2
+            this._loginSecurityAttrs = {...this.loginSecurityAttrs}
             this.update = true
         },
         close() {
@@ -219,16 +204,95 @@ export default {
         },
         submit() {
             if (this.update) {
+                this.turnOff()
                 this.updateLSA(this._loginSecurityAttrs)
                 this.update = false
                 this.modal = 'modal'
             }
             else {
+                this.turnOff()
                 this.addLSA(this._loginSecurityAttrs)
                 this.update = false
                 this.modal = 'modal'
             }
+        },
+        showAnswer(num) {
+            if (num == 1) {
+                if (this.sa1Show) {
+                    this.sa1Show = false
+                    this.sa1Type = 'password'
+                    this.sa1Eye = 'fas fa-eye-slash'
+                }
+                else {
+                    this.sa1Show = true
+                    this.sa1Type = 'text'
+                    this.sa1Eye = 'fas fa-eye'
+                }
+            }
+            else {
+                if (this.sa2Show) {
+                    this.sa2Show = false
+                    this.sa2Type = 'password'
+                    this.sa2Eye = 'fas fa-eye-slash'
+                }
+                else {
+                    this.sa2Show = true
+                    this.sa2Type = 'text'
+                    this.sa2Eye = 'fas fa-eye'
+                }
+            }
+        },
+        validateForm() {
+            if (
+                this._loginSecurityAttrs.email &&
+                this._loginSecurityAttrs.phone_number &&
+                this._loginSecurityAttrs.secret_question_1 &&
+                this._loginSecurityAttrs.secret_question_2 &&
+                this._loginSecurityAttrs.secret_answer_1 &&
+                this._loginSecurityAttrs.secret_answer_2) {
+
+                    return true
+
+                }
+            else {
+                this.turnOff()
+                if (!this.validateEmail(this._loginSecurityAttrs.email)) {
+                    this.nvemail = true
+                }
+                if (!this.validatePhone(this._loginSecurityAttrs.phone_number)) {
+                    this.nvphone = true
+                }
+                if (!this._loginSecurityAttrs.secret_question_1 || !this._loginSecurityAttrs.secret_answer_1) {
+                    this.nvsq1 = true
+                }
+                if (!this._loginSecurityAttrs.secret_question_2 || !this._loginSecurityAttrs.secret_answer_2) {
+                    this.nvsq2 = true
+                }
+                return false
+            }
+            
+        },
+        validateEmail(email) {
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+                return true
+            } else {
+                return false
+            }
+        },
+        validatePhone(phone) {
+            if (/^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/.test(phone)) {
+                return true
+            } else {
+                return false
+            }
+        },
+        turnOff() {
+            this.nvemail = false
+            this.nvphone = false
+            this.nvsq1 = false 
+            this.nvsq2 = false
         }
+
     },
     mounted() {
         this.getLSA()
@@ -237,10 +301,23 @@ export default {
         return {
             update: false,
             verifyMe: false,
-            _loginSecurityAttrs: {
-                is_email_verified:  false
-            },
-            modal: 'modal'
+            _loginSecurityAttrs: {},
+            modal: 'modal',
+
+            // form field validations
+            nvemail: false,
+            nvphone: false,
+            nvsq1: false,
+            nvsq2: false,
+
+            // secret questions
+            sa1Show: false,
+            sa2Show: false,
+            sa1Type: 'password',
+            sa1Eye: 'fas fa-eye-slash',
+            sa2Type: 'password',
+            sa2Eye: 'fas fa-eye-slash',
+
         }
     },
 }
@@ -249,6 +326,10 @@ export default {
 <style scoped>
     .modal-content {
         max-width: 300px;
+    }
+    .control .icon {
+        pointer-events: initial;
+        cursor: pointer;
     }
 
 </style>
