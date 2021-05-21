@@ -1,10 +1,23 @@
 <template>
+
     <div class="components">
-        <SidebarMyAccountProfile/>
+        <!-- <div>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="idebar=cprx">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div> -->
 
-        <SidebarMyAccountResume/>
+        <div id="sidebar=cprx">
+            <SidebarMyAccountProfile/>
 
-        <SidebarMyAccountSystem/> 
+            <SidebarMyAccountResume/>
+
+            <SidebarMyAccountSystem/> 
+
+        </div>
+        
     </div>
 </template>
 
